@@ -1,9 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
+import { collection, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { db } from './firebase'; // Assuming you've exported db from your Firebase config file
 
 const PaymentTable = () => {
   const [payments, setPayments] = useState([]);
+  const [editPayment, setEditPayment] = useState(null);
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    cardNumber: '',
+    cvv: '',
+    mobileNumber: '',
+    selectedPlan: '',
+  });
 
   useEffect(() => {
     const fetchPayments = async () => {
@@ -26,6 +35,40 @@ const PaymentTable = () => {
       console.log('Payment with ID', id, 'cancelled successfully.');
     } catch (error) {
       console.error('Error cancelling payment:', error);
+    }
+  };
+
+  const handleEdit = (payment) => {
+    setEditPayment(payment);
+    setFormData(payment);
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await updateDoc(doc(db, 'payments', editPayment.id), formData);
+      setPayments(payments.map((payment) => {
+        if (payment.id === editPayment.id) {
+          return formData;
+        }
+        return payment;
+      }));
+      setEditPayment(null);
+      setFormData({
+        firstName: '',
+        lastName: '',
+        cardNumber: '',
+        cvv: '',
+        mobileNumber: '',
+        selectedPlan: '',
+      });
+    } catch (error) {
+      console.error('Error updating payment:', error);
     }
   };
 
@@ -54,12 +97,45 @@ const PaymentTable = () => {
               <td className="border border-gray-400 px-4 py-2">{payment.mobileNumber}</td>
               <td className="border border-gray-400 px-4 py-2">{payment.selectedPlan}</td>
               <td className="border border-gray-400 px-4 py-2">
-                <button onClick={() => handleCancel(payment.id)} className="bg-red-500 text-white py-1 px-3 rounded-lg">Cancel Membership</button>
+                <button onClick={() => handleCancel(payment.id)} className="bg-red-500 text-white py-1 px-3 rounded-lg mr-2">Cancel Membership</button>
+                <button onClick={() => handleEdit(payment)} className="bg-blue-500 text-white py-1 px-3 rounded-lg">Edit</button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+      {editPayment && (
+        <div className="mt-4">
+          <h2 className="text-lg font-semibold mb-2">Edit Payment</h2>
+          <form onSubmit={handleSubmit}>
+            <div className="flex flex-col mb-4">
+              <label className="mb-1">First Name</label>
+              <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} />
+            </div>
+            <div className="flex flex-col mb-4">
+              <label className="mb-1">Last Name</label>
+              <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} />
+            </div>
+            <div className="flex flex-col mb-4">
+              <label className="mb-1">Card Number</label>
+              <input type="text" name="cardNumber" value={formData.cardNumber} onChange={handleChange} />
+            </div>
+            <div className="flex flex-col mb-4">
+              <label className="mb-1">CVV</label>
+              <input type="text" name="cvv" value={formData.cvv} onChange={handleChange} />
+            </div>
+            <div className="flex flex-col mb-4">
+              <label className="mb-1">Mobile Number</label>
+              <input type="text" name="mobileNumber" value={formData.mobileNumber} onChange={handleChange} />
+            </div>
+            <div className="flex flex-col mb-4">
+              <label className="mb-1">Selected Plan</label>
+              <input type="text" name="selectedPlan" value={formData.selectedPlan} onChange={handleChange} />
+            </div>
+            <button type="submit" className="bg-blue-500 text-white py-1 px-3 rounded-lg">Save</button>
+          </form>
+        </div>
+      )}
     </div>
   );
 };
