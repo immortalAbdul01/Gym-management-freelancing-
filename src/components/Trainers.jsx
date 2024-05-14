@@ -11,7 +11,7 @@ const Trainers = () => {
 
       <div className=" flex flex-col md:flex-row justify-center items-center gap-10 mt-8">
         <TrainerCard img={img1} name="Anatoly" />
-        <TrainerCard img={img2} name="Victor" />
+        <TrainerCard img="https://www.pictureperfectphoto.co.uk/wp-content/uploads/2020/11/personal-trainer-fitness-photography__001-scaled.jpg" name="Victor" />
         <TrainerCard img={img3} name="Evgeny" />
       </div>
     </div>

@@ -9,7 +9,7 @@ const Footer = () => {
       <div className=" flex flex-col md:flex-row justify-between md:px-32 px-5 p-5">
         <div className=" w-full md:w-1/4">
           <Link to="/">
-            <h1 className=" font-semibold text-2xl text-brightRed">FitZone</h1>
+            <h1 className=" font-semibold text-2xl text-brightRed">FitGym</h1>
           </Link>
           <p className=" mt-4">
             Lorem ipsum dolor sit amet consectetur adipisicing elit.
@@ -31,13 +31,7 @@ const Footer = () => {
           </div>
         </div>
       </div>
-      <div>
-        <p className=" text-center mt-4">
-          @copyright developed by{" "}
-          <span className=" text-brightRed"> champion programmers</span> | All
-          rights reserved
-        </p>
-      </div>
+
     </div>
   );
 };

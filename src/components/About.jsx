@@ -11,16 +11,11 @@ const About = () => {
 
         <div className=" w-full md:w-3/4 space-y-5 mt-4">
           <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Vel nisi
-            velit debitis iusto voluptatum consectetur optio minima, ipsum
-            maxime, blanditiis illo corporis quod nam voluptas magnam dolorum
-            amet accusamus error!
+          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Velit hic cumque quibusdam eos, temporibus veniam expedita earum odit eligendi obcaecati dolorum quaerat pariatur!
           </p>
 
           <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem
-            accusamus laboriosam rerum aliquid et odit itaque at, doloremque quo
-            consequuntur?
+           Lorem ipsum dolor sit amet consectetur adipisicing elit. Sint accusantium tempore possimus odio repellendus. Quibusdam, culpa veritatis consectetur dolore voluptates excepturi asperiores reprehenderit?
           </p>
         </div>
       </div>
