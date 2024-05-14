@@ -105,32 +105,32 @@ const PaymentTable = () => {
         </tbody>
       </table>
       {editPayment && (
-        <div className="mt-4">
-          <h2 className="text-lg font-semibold mb-2">Edit Payment</h2>
+        <div className="mt-4 bg-black p-4 rounded-lg">
+          <h2 className="text-lg font-semibold mb-2 text-white">Edit Payment</h2>
           <form onSubmit={handleSubmit}>
             <div className="flex flex-col mb-4">
-              <label className="mb-1">First Name</label>
-              <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} />
+              <label className="mb-1 text-white">First Name</label>
+              <input type="text" className='bg-black' name="firstName" value={formData.firstName} onChange={handleChange} />
             </div>
             <div className="flex flex-col mb-4">
-              <label className="mb-1">Last Name</label>
-              <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} />
+              <label className="mb-1 text-white">Last Name</label>
+              <input type="text" className='bg-black' name="lastName" value={formData.lastName} onChange={handleChange} />
             </div>
             <div className="flex flex-col mb-4">
-              <label className="mb-1">Card Number</label>
-              <input type="text" name="cardNumber" value={formData.cardNumber} onChange={handleChange} />
+              <label className="mb-1 text-white">Card Number</label>
+              <input type="text" className='bg-black' name="cardNumber" value={formData.cardNumber} onChange={handleChange} />
             </div>
             <div className="flex flex-col mb-4">
-              <label className="mb-1">CVV</label>
-              <input type="text" name="cvv" value={formData.cvv} onChange={handleChange} />
+              <label className="mb-1 text-white">CVV</label>
+              <input type="text" className='bg-black' name="cvv" value={formData.cvv} onChange={handleChange} />
             </div>
             <div className="flex flex-col mb-4">
-              <label className="mb-1">Mobile Number</label>
-              <input type="text" name="mobileNumber" value={formData.mobileNumber} onChange={handleChange} />
+              <label className="mb-1 text-white">Mobile Number</label>
+              <input type="text" className='bg-black'  name="mobileNumber" value={formData.mobileNumber} onChange={handleChange} />
             </div>
             <div className="flex flex-col mb-4">
-              <label className="mb-1">Selected Plan</label>
-              <input type="text" name="selectedPlan" value={formData.selectedPlan} onChange={handleChange} />
+              <label className="mb-1 text-white">Selected Plan</label>
+              <input type="text" className='bg-black' name="selectedPlan" value={formData.selectedPlan} onChange={handleChange} />
             </div>
             <button type="submit" className="bg-blue-500 text-white py-1 px-3 rounded-lg">Save</button>
           </form>
