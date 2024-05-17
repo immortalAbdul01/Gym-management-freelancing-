@@ -4,14 +4,16 @@ import { db } from './firebase'; // Assuming you've exported db from your Fireba
 
 const PaymentTable = () => {
   const [payments, setPayments] = useState([]);
+  const [filteredPayments, setFilteredPayments] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [editPayment, setEditPayment] = useState(null);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
-    cardNumber: '',
-    cvv: '',
     mobileNumber: '',
     selectedPlan: '',
+    emailAddress: '',
+    actualAddress: ''
   });
 
   useEffect(() => {
@@ -23,6 +25,7 @@ const PaymentTable = () => {
         paymentData.push({ id: doc.id, ...doc.data() });
       });
       setPayments(paymentData);
+      setFilteredPayments(paymentData);
     };
 
     fetchPayments();
@@ -31,7 +34,9 @@ const PaymentTable = () => {
   const handleCancel = async (id) => {
     try {
       await deleteDoc(doc(db, 'payments', id));
-      setPayments(payments.filter((payment) => payment.id !== id));
+      const updatedPayments = payments.filter((payment) => payment.id !== id);
+      setPayments(updatedPayments);
+      setFilteredPayments(updatedPayments);
       console.log('Payment with ID', id, 'cancelled successfully.');
     } catch (error) {
       console.error('Error cancelling payment:', error);
@@ -52,50 +57,84 @@ const PaymentTable = () => {
     e.preventDefault();
     try {
       await updateDoc(doc(db, 'payments', editPayment.id), formData);
-      setPayments(payments.map((payment) => {
+      const updatedPayments = payments.map((payment) => {
         if (payment.id === editPayment.id) {
-          return formData;
+          return { ...formData, id: editPayment.id }; // Ensure the ID remains
         }
         return payment;
-      }));
+      });
+      setPayments(updatedPayments);
+      setFilteredPayments(updatedPayments);
       setEditPayment(null);
       setFormData({
         firstName: '',
         lastName: '',
-        cardNumber: '',
-        cvv: '',
         mobileNumber: '',
         selectedPlan: '',
+        emailAddress: '',
+        actualAddress: ''
       });
     } catch (error) {
       console.error('Error updating payment:', error);
     }
   };
 
+  const getPlanAmount = (plan) => {
+    switch (plan) {
+      case 'first':
+        return '1000 Rs';
+      case 'second':
+        return '3000 Rs';
+      case 'third':
+        return '5000 Rs';
+      default:
+        return '0 Rs';
+    }
+  };
+
+  const handleSearchChange = (e) => {
+    const value = e.target.value.toLowerCase();
+    setSearchTerm(value);
+    const filtered = payments.filter(payment =>
+      payment.firstName.toLowerCase().includes(value) ||
+      payment.lastName.toLowerCase().includes(value)
+    );
+    setFilteredPayments(filtered);
+  };
+
   return (
     <div className="container mx-auto">
       <h1 className="text-2xl font-semibold mb-4">Payments Data</h1>
+      <input
+        type="text"
+        placeholder="Search by name"
+        value={searchTerm}
+        onChange={handleSearchChange}
+        className="bg-black mb-4 p-2 border border-gray-400 rounded"
+      />
       <table className="min-w-full border-collapse table-auto">
         <thead>
           <tr>
             <th className="border border-gray-400 px-4 py-2">First Name</th>
             <th className="border border-gray-400 px-4 py-2">Last Name</th>
-            <th className="border border-gray-400 px-4 py-2">Card Number</th>
-            <th className="border border-gray-400 px-4 py-2">CVV</th>
             <th className="border border-gray-400 px-4 py-2">Mobile Number</th>
             <th className="border border-gray-400 px-4 py-2">Selected Plan</th>
+            <th className="border border-gray-400 px-4 py-2">Amount</th>
+            <th className="border border-gray-400 px-4 py-2">Email Address</th>
+            <th className="border border-gray-400 px-4 py-2">Actual Address</th>
             <th className="border border-gray-400 px-4 py-2">Actions</th>
           </tr>
         </thead>
         <tbody>
-          {payments.map((payment, index) => (
+          {filteredPayments.map((payment, index) => (
             <tr key={index}>
               <td className="border border-gray-400 px-4 py-2">{payment.firstName}</td>
               <td className="border border-gray-400 px-4 py-2">{payment.lastName}</td>
-              <td className="border border-gray-400 px-4 py-2">{payment.cardNumber}</td>
-              <td className="border border-gray-400 px-4 py-2">{payment.cvv}</td>
               <td className="border border-gray-400 px-4 py-2">{payment.mobileNumber}</td>
               <td className="border border-gray-400 px-4 py-2">{payment.selectedPlan}</td>
+              <td className="border border-gray-400 px-4 py-2">{getPlanAmount(payment.selectedPlan)}</td>
+              <td className="border border-gray-400 px-4 py-2">{payment.emailAddress}</td>
+              <td className="border border-gray-400 px-4 py-2">{payment.actualAddress}</td>
               <td className="border border-gray-400 px-4 py-2">
                 <button onClick={() => handleCancel(payment.id)} className="bg-red-500 text-white py-1 px-3 rounded-lg mr-2">Cancel Membership</button>
                 <button onClick={() => handleEdit(payment)} className="bg-blue-500 text-white py-1 px-3 rounded-lg">Edit</button>
@@ -110,27 +149,27 @@ const PaymentTable = () => {
           <form onSubmit={handleSubmit}>
             <div className="flex flex-col mb-4">
               <label className="mb-1 text-white">First Name</label>
-              <input type="text" className='bg-black' name="firstName" value={formData.firstName} onChange={handleChange} />
+              <input type="text" className="bg-black text-white" name="firstName" value={formData.firstName} onChange={handleChange} />
             </div>
             <div className="flex flex-col mb-4">
               <label className="mb-1 text-white">Last Name</label>
-              <input type="text" className='bg-black' name="lastName" value={formData.lastName} onChange={handleChange} />
-            </div>
-            <div className="flex flex-col mb-4">
-              <label className="mb-1 text-white">Card Number</label>
-              <input type="text" className='bg-black' name="cardNumber" value={formData.cardNumber} onChange={handleChange} />
-            </div>
-            <div className="flex flex-col mb-4">
-              <label className="mb-1 text-white">CVV</label>
-              <input type="text" className='bg-black' name="cvv" value={formData.cvv} onChange={handleChange} />
+              <input type="text" className="bg-black text-white" name="lastName" value={formData.lastName} onChange={handleChange} />
             </div>
             <div className="flex flex-col mb-4">
               <label className="mb-1 text-white">Mobile Number</label>
-              <input type="text" className='bg-black'  name="mobileNumber" value={formData.mobileNumber} onChange={handleChange} />
+              <input type="text" className="bg-black text-white" name="mobileNumber" value={formData.mobileNumber} onChange={handleChange} />
             </div>
             <div className="flex flex-col mb-4">
               <label className="mb-1 text-white">Selected Plan</label>
-              <input type="text" className='bg-black' name="selectedPlan" value={formData.selectedPlan} onChange={handleChange} />
+              <input type="text" className="bg-black text-white" name="selectedPlan" value={formData.selectedPlan} onChange={handleChange} />
+            </div>
+            <div className="flex flex-col mb-4">
+              <label className="mb-1 text-white">Email Address</label>
+              <input type="email" className="bg-black text-white" name="emailAddress" value={formData.emailAddress} onChange={handleChange} />
+            </div>
+            <div className="flex flex-col mb-4">
+              <label className="mb-1 text-white">Actual Address</label>
+              <input type="text" className="bg-black text-white" name="actualAddress" value={formData.actualAddress} onChange={handleChange} />
             </div>
             <button type="submit" className="bg-blue-500 text-white py-1 px-3 rounded-lg">Save</button>
           </form>

@@ -10,6 +10,8 @@ const PaymentForm = ({ onClose }) => {
     cardNumber: "",
     cvv: "",
     mobileNumber: "",
+    emailAddress: "",
+    actualAddress: ""
   });
 
   const [amount, setAmount] = useState(0); // State for amount
@@ -57,8 +59,8 @@ const PaymentForm = ({ onClose }) => {
 
     try {
       // Save form data to Firestore
-		const docRef = await addDoc(collection(db, "payments"), formData);
-		alert("Congrats You are a gym member now")
+      const docRef = await addDoc(collection(db, "payments"), formData);
+      alert("Congrats You are a gym member now");
       console.log("Form data saved to Firestore with ID:", docRef.id);
 
       // Reset form fields after submission
@@ -69,6 +71,8 @@ const PaymentForm = ({ onClose }) => {
         cardNumber: "",
         cvv: "",
         mobileNumber: "",
+        emailAddress: "",
+        actualAddress: ""
       });
 
       // Close the form
@@ -156,6 +160,28 @@ const PaymentForm = ({ onClose }) => {
               onChange={handleChange}
               placeholder="Mobile Number"
               maxLength="10"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <input
+              className="bg-black"
+              type="email"
+              name="emailAddress"
+              value={formData.emailAddress}
+              onChange={handleChange}
+              placeholder="Email Address"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <input
+              className="bg-black"
+              type="text"
+              name="actualAddress"
+              value={formData.actualAddress}
+              onChange={handleChange}
+              placeholder="Actual Address"
               required
             />
           </div>
